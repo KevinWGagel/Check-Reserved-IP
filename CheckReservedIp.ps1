@@ -88,9 +88,12 @@ $ReservationDetails | ForEach-Object {
     Write-Verbose "Checking $($_.IPAddress) to see if it is online."
     if ($_.AddressState -eq 'ActiveReservation') {
         $_.Online = $true
-        $_.Date = $(Get-Date -Format 'yyyy/MM/dd')
-        $_.Time = $(Get-Date -Format 'HH:mm:ss')
     }
+    else{
+        $_.Online = $false
+    }
+    $_.Date = $(Get-Date -Format 'yyyy/MM/dd')
+    $_.Time = $(Get-Date -Format 'HH:mm:ss')
 }
 
 <# IPAddress-Results.csv files are to allow a quick overview of usage for a specifc reservation. They're meant for
