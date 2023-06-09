@@ -83,7 +83,7 @@ $ResultFiles | ForEach-Object {
 #Either one does not assure the device at the IP will be detected if it has a firewall that has ICMP set to drop
 #Get-NetNeighbor will retrieve what is in cache but only works for devices on the same network segment
 #Nmap will retrieve a MAC address but on my w/s it always returns the same MAC and is therefor unsuitable, it also takes around 30 seconds for each ip scan
-#The Dhcp scope leases indicate if a reserved IP is "(active)" or "(inactive)" - this is only reliable if the device is online
+#The Dhcp scope leases indicate if a reserved IP is "(active)" or "(inactive)" - this is only reliable if you are recording this state
 Write-Verbose "Checking reserved Ip address state."
 $ReservationDetails | ForEach-Object {
     Write-Verbose "Checking $($_.IPAddress) to see if it is online."
