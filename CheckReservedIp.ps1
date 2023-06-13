@@ -82,15 +82,18 @@ Test-Connection has -count parameter and can run faster than Test-NetConnection 
 Either one does not assure the device at the IP will be detected if it has a firewall that has ICMP set to drop
 Get-NetNeighbor will retrieve what is in cache but only works for devices on the same network segment
 Nmap will retrieve a MAC address but on my w/s it always returns the same MAC and is therefor unsuitable, it also takes around 30 seconds for each ip scan
-The Dhcp scope leases indicate if a reserved IP is "(active)" or "(inactive)" - this is only reliable if you are recording this state #>
-Write-Verbose "Checking reserved Ip address state."
+The Dhcp scope leases indicate if a reserved IP is "(active)" or "(inactive)" - this is only reliable if you are recording this state but itself is not
+reliable either because it only indicates active or inactive if the client using that IP is requesting an IP address. In otherwords if you assign a static IP
+then whatever status dhcp has will remain that way until you delete the reservation or boot a client with that mac address with the nic configured as dhcp. #>
+Write-Verbose "Checking 'reserved' Ips to see if they're online."
 $ReservationDetails | ForEach-Object {
-    Write-Verbose "Checking $($_.IPAddress) to see if it is online."
-    if ($_.AddressState -eq 'ActiveReservation') {
+    if (Test-Connection -ComputerName $($_.IPAddress) -count 1 -Quiet){
         $_.Online = $true
+        Write-Verbose "Found $($_.IPAddress) online."
     }
-    else{
+    else {
         $_.Online = $false
+        Write-Verbose "$($_.IPAddress) was not detected online."
     }
     $_.Date = $(Get-Date -Format 'yyyy/MM/dd')
     $_.Time = $(Get-Date -Format 'HH:mm:ss')
